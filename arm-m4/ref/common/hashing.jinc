@@ -336,7 +336,8 @@ fn _hash_verification_key(
         j += 1;
     }
 
-    pstate = __add_block_end(pstate, j * 4, SHAKE256_RATE);
+    j <<= 2;
+    pstate = _shake256_add_block_end(pstate, j);
 
     pstate = _keccakf1600_ref(pstate);
 
@@ -377,9 +378,9 @@ inline fn __derive_commitment_hash
         pstate[:u8 pos] = s;
         pos += 1; ctr += 1;
         if (pos == SHAKE256_RATE) {
-            #spill(ctr, pos, m);
+            #spill(ctr, m);
             pstate = _keccakf1600_ref(pstate);
-            #unspill(ctr, pos, m);
+            #unspill(ctr, m);
             pos = 0;
         }
     }
